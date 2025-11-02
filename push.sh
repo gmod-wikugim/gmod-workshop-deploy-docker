@@ -58,4 +58,4 @@ extracted_code=$(get_steam_guard_code)
 echo "Extracted steam guard code: $extracted_code"
 
 echo "Uploading changes to workshop... Can take a while..."
-~/Steam/steamcmd.sh +login $STEAM_USERNAME $STEAM_PASSWORD $extracted_code +workshop_build_item /app/workshop.vdf +quit
+/app/Steam/steamcmd.sh +login $STEAM_USERNAME $STEAM_PASSWORD $extracted_code +workshop_build_item /app/workshop.vdf +quit
