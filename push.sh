@@ -15,7 +15,17 @@ if [ -f /server/workshop_include ]; then
         fi
     done < "/server/workshop_include"
 else
-    cp . /workshop
+    cp /server/maps /workshop
+    cp /server/backgrounds /workshop -r
+    cp /server/gamemodes /workshop -r
+    cp /server/materials /workshop -r
+    cp /server/lua /workshop -r
+    cp /server/scenes /workshop -r
+    cp /server/models /workshop -r
+    cp /server/scripts /workshop -r
+    cp /server/particles /workshop -r
+    cp /server/sound /workshop -r
+    cp /server/resource /workshop -r
 fi
 
 echo "Imporing maFile"
@@ -26,7 +36,7 @@ steamguard -m $PWD/maFiles import --files /app/steamacoount.maFile
 cp /server/addon.json /workshop
 ls -la /workshop
 
-/app/fastgmad create -folder /workshop -out content.gma -warninvalid
+/app/fastgmad create -folder /workshop -out content.gma -warninvalid -noprogress
 
 # Create workshop.vdf if it does not exist
 cat <<EOL > "/app/workshop.vdf"
