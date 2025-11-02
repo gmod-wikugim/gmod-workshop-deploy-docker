@@ -3,7 +3,7 @@ FROM ubuntu:22.04
 WORKDIR /app
 
 RUN apt-get update
-RUN apt-get install -y lib32gcc-s1 unzip curl
+RUN apt-get install -y lib32gcc-s1 unzip curl git git-lfs
 RUN mkdir /app/Steam -p && curl -sqL "https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz" | tar zxvf - -C /app/Steam
 RUN curl -sqL "https://github.com/dyc3/steamguard-cli/releases/download/v0.17.1/steamguard-cli_0.17.1-0.deb" > steamguard.deb
 RUN apt-get install ./steamguard.deb
