@@ -6,6 +6,15 @@ if ! [ -f /server/addon.json ]; then
     exit 1
 fi
 
+# Parse "title" from addon json
+
+# Parse title from /server/addon.json, fallback to STEAM_WORKSHOPID
+workshop_title=$(jq -r '.title // empty' /server/addon.json)
+if [ -z "$workshop_title" ]; then
+    workshop_title="$STEAM_WORKSHOPID"
+fi
+
+
 # Check is workshop_include file exists
 if [ -f /server/workshop_include ]; then
     while read -r line
@@ -38,17 +47,33 @@ ls -la /workshop
 
 /app/fastgmad create -folder /workshop -out content.gma -warninvalid -noprogress
 
-# Create workshop.vdf if it does not exist
-cat <<EOL > "/app/workshop.vdf"
+# Create workshop.vdf with previewfile if /server/preview.png exists
+if [ -f /server/preview.png ]; then
+    cat <<EOL > "/app/workshop.vdf"
 "workshopitem"
 {
-    "appid"		"4000"
-    "publishedfileid"	"$STEAM_WORKSHOPID"
-    "visibility"		""
-    "contentfolder"		"$PWD/content.gma"
-    "changenote"		"Auto-uploaded: $(date +'%d-%B-%Y - %H:%M:%S')"
+    "appid"        "4000"
+    "publishedfileid"    "$STEAM_WORKSHOPID"
+    "visibility"        ""
+    "contentfolder"        "$PWD/content.gma"
+    "title"		"$workshop_title"
+    "previewfile"        "/server/preview.png"
+    "changenote"        "Auto-uploaded: $(date +'%d-%B-%Y - %H:%M:%S')"
 }
 EOL
+else
+    cat <<EOL > "/app/workshop.vdf"
+"workshopitem"
+{
+    "appid"        "4000"
+    "publishedfileid"    "$STEAM_WORKSHOPID"
+    "visibility"        ""
+    "contentfolder"        "$PWD/content.gma"
+    "title"		"$workshop_title"
+    "changenote"        "Auto-uploaded: $(date +'%d-%B-%Y - %H:%M:%S')"
+}
+EOL
+fi
 
 # Function to get the steam guard code
 get_steam_guard_code() {
