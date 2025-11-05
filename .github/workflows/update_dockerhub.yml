@@ -7,7 +7,7 @@ jobs:
   updateWorkshop:
     runs-on: [self-hosted, linux, X64]
     container:
-      image: docker:29-rc-dind-rootless
+      image: alpine
       volumes:
         - ${{ github.workspace }}:/workspace
       env:
