@@ -1,28 +1,27 @@
-name: Update docker_hub
+name: ci
 
 on:
   push:
 
 jobs:
-  updateWorkshop:
+  docker:
     runs-on: [self-hosted, linux, X64]
-    container:
-      image: jtaylerj/gmod-workshop-deploy
-      volumes:
-        - ${{ github.workspace }}:/workspace
-      env:
-        DOCKER_USER: ${{ vars.DOCKER_USER }}
-        DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
-        DOCKER_REPO: ${{ vars.DOCKER_REPO }}
     steps:
-      - name: Check out the repo
-        uses: actions/checkout@v5
+      -
+        name: Login to Docker Hub
+        uses: docker/login-action@v3
         with:
-            lfs: true
-            submodules: true
-      - name: Login to Docker hub
-        run: docker login -u $DOCKER_USER -p $DOCKER_TOKEN
-      - name: Build Docker image
-        run: docker build -t $DOCKER_REPO /workspace
-      - name: Push Docker
-        run: docker push $DOCKER_REPO
+          username: ${{ vars.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      -
+        name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          tags: ${{ vars.DOCKER_REPO }}
