@@ -1,0 +1,28 @@
+name: Update docker_hub
+
+on:
+  push:
+
+jobs:
+  updateWorkshop:
+    runs-on: [self-hosted, linux, X64]
+    container:
+      image: docker:29-rc-dind-rootless
+      volumes:
+        - ${{ github.workspace }}:/workspace
+      env:
+        DOCKER_USER: ${{ vars.DOCKER_USER }}
+        DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
+        DOCKER_REPO: ${{ vars.DOCKER_REPO }}
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v5
+        with:
+            lfs: true
+            submodules: true
+      - name: Login to Docker hub
+        run: docker login -u $DOCKER_USER -p $DOCKER_TOKEN
+      - name: Build Docker image
+        run: docker build -t $DOCKER_REPO /workspace
+      - name: Push Docker
+        run: docker push $DOCKER_REPO
