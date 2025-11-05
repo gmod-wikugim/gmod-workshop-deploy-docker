@@ -7,7 +7,7 @@ jobs:
   updateWorkshop:
     runs-on: [self-hosted, linux, X64]
     container:
-      image: alpine
+      image: alpine/git:v2.49.
       volumes:
         - ${{ github.workspace }}:/workspace
       env:
